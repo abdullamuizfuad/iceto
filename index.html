@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<script>try{var t=localStorage.getItem("iceto_theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<title>ICETO Gelato – Interactive Case | MKT301</title>
+<style>
+:root{--bg:#fbf8f2;--card:#fff;--ink:#1f2a2e;--mute:#5d6b70;--line:#e4ddd0;--accent:#0f8b8d;--accent2:#e8704a;--ok:#2e8b57;--bad:#c0392b;--soft:#e7f4f4}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#14191b;--card:#1d2427;--ink:#eef2f2;--mute:#9fb0b4;--line:#2f3a3e;--accent:#4fc3c5;--accent2:#ff8e69;--ok:#5cc98a;--bad:#ff7a6b;--soft:#1c3235;color-scheme:dark}}
+:root[data-theme=dark]{--bg:#14191b;--card:#1d2427;--ink:#eef2f2;--mute:#9fb0b4;--line:#2f3a3e;--accent:#4fc3c5;--accent2:#ff8e69;--ok:#5cc98a;--bad:#ff7a6b;--soft:#1c3235;color-scheme:dark}
+:root[data-theme=light]{color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{padding:28px 16px 18px;max-width:980px;margin:auto}
+.kicker{color:var(--accent);font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:.78rem}
+h1{font-size:clamp(1.6rem,4vw,2.4rem);line-height:1.15;margin:.3rem 0}
+.sub{color:var(--mute);margin:0}
+.note{font-size:.85rem;color:var(--mute);border-left:3px solid var(--accent2);padding:.4rem .8rem;margin-top:14px;background:var(--card)}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+nav div{max-width:980px;margin:auto;display:flex;gap:4px;overflow-x:auto;padding:8px 16px}
+nav button{white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:999px;cursor:pointer;font:inherit;font-size:.9rem}
+nav button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+main{max-width:980px;margin:auto;padding:20px 16px 80px}
+section{display:none}section.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin:14px 0}
+h2{margin:.2rem 0 .6rem;font-size:1.35rem}h3{margin:.2rem 0 .5rem;font-size:1.05rem}
+details{background:var(--card);border:1px solid var(--line);border-radius:12px;margin:10px 0;padding:2px 16px}
+summary{cursor:pointer;font-weight:600;padding:12px 0}
+details p{margin:.4rem 0 .9rem}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.stat{background:var(--soft);border-radius:10px;padding:12px}
+.stat b{display:block;font-size:1.4rem}
+.stat span{color:var(--mute);font-size:.85rem}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.tabs button,.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 14px;border-radius:8px;cursor:pointer;font:inherit}
+.tabs button.on,.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--mute);font-weight:600}
+.tbl{overflow-x:auto}
+label{display:block;font-size:.88rem;color:var(--mute);margin-top:10px}
+input[type=range]{width:100%;accent-color:var(--accent)}
+input[type=number],select,textarea{width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.bar{height:22px;background:var(--soft);border-radius:6px;overflow:hidden;margin:4px 0}
+.bar i{display:block;height:100%;background:var(--accent);transition:width .25s}
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.8rem;font-weight:600}
+.pill.ok{background:color-mix(in srgb,var(--ok) 20%,transparent);color:var(--ok)}
+.pill.bad{background:color-mix(in srgb,var(--bad) 20%,transparent);color:var(--bad)}
+.q{border-top:1px dashed var(--line);padding-top:12px;margin-top:12px}
+.fb{margin-top:6px;font-size:.9rem;color:var(--mute)}
+.two{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+small{color:var(--mute)}
+.scale{position:relative;height:54px;margin:18px 0 6px;background:linear-gradient(90deg,var(--soft),var(--soft));border-radius:8px}
+.scale .band{position:absolute;top:0;bottom:0;background:color-mix(in srgb,var(--accent) 30%,transparent);border:1px dashed var(--accent)}
+.scale .mk{position:absolute;top:-4px;transform:translateX(-50%);font-size:.7rem;text-align:center;white-space:nowrap}
+.scale .mk::after{content:"";display:block;width:2px;height:58px;background:var(--ink);margin:0 auto;opacity:.5}
+.scale .mk.c{color:var(--accent2);font-weight:700}
+.scale .mk.c::after{background:var(--accent2);opacity:1}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+#theme{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 14px;cursor:pointer;font:inherit;font-size:.85rem;white-space:nowrap}
+.player{position:sticky;top:52px;z-index:4}
+.prow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
+.inl{display:inline-flex;gap:6px;align-items:center;margin:0}
+.inl select{width:auto;max-width:200px;padding:6px}
+.read h2{margin-top:26px;color:var(--accent)}
+.rd{cursor:pointer;padding:4px 8px;border-radius:8px;border-left:3px solid transparent}
+.rd:hover{background:var(--soft)}
+.rd.now{background:var(--soft);border-left-color:var(--accent2)}
+.qc textarea{margin-top:8px}
+.lv{display:inline-block;font-size:.75rem;font-weight:700;background:var(--soft);color:var(--accent);padding:2px 8px;border-radius:6px;margin-right:6px}
+.kp{margin-top:10px;padding:12px;border-radius:10px;background:var(--soft)}
+.kp label{color:var(--ink);margin-top:6px}
+.prog{position:sticky;top:52px;z-index:4;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+</style>
+</head>
+<body>
+<header>
+  <div class="top"><div class="kicker">MKT301 International Marketing · Teaching Case · T2 2026</div><button id="theme" aria-label="Toggle light or dark mode">Dark mode</button></div>
+  <h1>ICETO Gelato: A Flagship in Singapore, a Freezer in Every 7-Eleven</h1>
+  <p class="sub">A Maldivian gelato brand plans its first move into Southeast Asia. Read the brief, test the numbers, then make the board's call.</p>
+  <div class="note">Conceptual teaching case. ICETO's internal figures, the partner manufacturer Selatan Frozen Foods and the 7-Eleven partnership details are created for classroom use. Market descriptions are simplified. The scores and hints in this page are starting points for discussion, not model answers.</div>
+</header>
+
+<nav><div id="nav"></div></nav>
+
+<main>
+<!-- 1 BRIEF -->
+<section id="brief">
+  <div class="grid">
+    <div class="stat"><b>MVR 19m</b><span>2025 revenue</span></div>
+    <div class="stat"><b>48%</b><span>gross margin</span></div>
+    <div class="stat"><b>5 + 2</b><span>stores + resort counters</span></div>
+    <div class="stat"><b>0</b><span>years of international experience</span></div>
+  </div>
+  <div class="card player" id="player">
+    <b>Listen to the full case</b>
+    <div class="prow">
+      <button class="btn primary" id="pplay">&#9654; Play</button>
+      <button class="btn" id="ppause">&#10074;&#10074; Pause</button>
+      <button class="btn" id="pstop">&#9632; Stop</button>
+      <label class="inl">Speed <select id="pspeed"><option value="0.85">0.85x</option><option value="1" selected>1x</option><option value="1.15">1.15x</option><option value="1.3">1.3x</option></select></label>
+      <label class="inl">Voice <select id="pvoice"></select></label>
+    </div>
+    <small id="pstat">Uses your device's built-in voice. Tap any paragraph to start reading from there. Exhibits are not read aloud.</small>
+  </div>
+  <article class="read"><h2>1. From Majeedhee Magu to the region</h2>
+    <p class="rd">ICETO opened in 2019 as a small gelato counter on Majeedhee Magu in Malé. Its three founders each brought a different skill. Yusuf trained as a food scientist in Italy, Aishath studied pastry in Singapore, and Hassan spent ten years managing food and beverage at Maldivian resorts. Together they built a brand on three ideas: real Italian gelato made with slow-churn machines, bold flavours using Maldivian ingredients such as young coconut, pandan, tamarind, mango and toddy palm syrup, and a bright, photo-friendly style that made ICETO popular on Instagram.</p>
+    <p class="rd">Six years later, ICETO runs five outlets in Malé, Hulhumalé and Addu City, plus two counters inside resorts. All gelato is made in one central kitchen in Hulhumalé. In 2025 the company earned MVR 19 million in revenue with a gross margin of 48 percent. It has no debt, but most profits have been spent on opening new outlets, so cash for a large overseas project is limited. None of the founders has run a business outside the Maldives before.</p>
+  </article>
+  <article class="read"><h2>2. Why grow abroad, and why now?</h2>
+    <p class="rd">By 2025, growth in the Maldives was slowing. Almost every busy street in Malé and Hulhumalé already had an ICETO outlet or a competitor nearby, and the local population is small. The founders listed their options. They could sell more to existing customers through loyalty offers and delivery apps. They could create new products for the Maldives, such as gelato cakes and packaged pints for supermarkets. They could start a completely different business, such as a bakery-café chain. Or they could take the existing gelato range into new markets overseas. The board chose to focus on new markets abroad, while keeping a small product-development project running at home.</p>
+    <p class="rd">The founders did not agree on how to run an overseas business. Yusuf wanted every overseas store to copy Malé exactly: same recipes, same prices, same design, because "that is what made us successful." Aishath argued that each country should be treated as a separate business with its own local manager making all decisions. Hassan wanted something in between: "We should see Southeast Asia as one region with one ICETO brand and one strategy, but let each country adjust flavours and promotions to local tastes." By early 2026, Hassan's view was winning support.</p>
+  </article>
+  <article class="read"><h2>3. The two-part plan</h2>
+    <p class="rd">Aishath's years in Singapore gave the founders a first contact in the region. In late 2025, a buyer from 7-Eleven Singapore tasted ICETO at a regional food trade fair and suggested a partnership. 7-Eleven is one of the most familiar convenience-store brands in Southeast Asia. Each country's stores are run by a separate local operator under licence, but the operators share suppliers and ideas. Singapore has several hundred 7-Eleven stores, Malaysia has a large national network, and Thailand has one of the biggest 7-Eleven networks in the world, with stores on almost every busy street.</p>
+    <p class="rd">From these conversations, the founders developed a two-part plan. Part one is a flagship ICETO gelato store in Singapore: a premium, sit-down store in a busy shopping district, serving fresh scoops, gelato desserts and coffee, and designed to show the full ICETO brand experience. It would be owned and run by ICETO through a new Singapore company. Part two is a range of packaged ICETO gelato cups sold in 7-Eleven freezers, starting in Singapore and then rolling out to Malaysia and Thailand if sales targets are met. The flagship would build the brand's image; the 7-Eleven range would bring volume and reach.</p>
+    <p class="rd">Hassan explains the logic: "The flagship tells people who we are. 7-Eleven puts us in their hand every day." Aishath is less sure. "If people can buy ICETO for a few dollars in a convenience store, why would they pay three times more at our flagship? We could end up confusing our own customers."</p>
+  </article>
+  <article class="read"><h2>4. How to enter: the options</h2>
+    <p class="rd">For the flagship, the founders considered three routes. They could open it themselves through a wholly-owned Singapore company, giving full control over design, staff and service but requiring the largest investment in rent, fit-out and hiring. They could franchise it to a Singapore food-and-beverage group, which would invest the money and run the store while paying ICETO a fee. Or they could form a joint venture with a local café group, sharing the cost, the risk and the decisions. Singapore commercial rents are among the highest in Asia, so the choice matters for ICETO's limited cash.</p>
+    <p class="rd">For the 7-Eleven range, 7-Eleven Singapore made two suggestions. First, rather than ICETO shipping frozen gelato from Malé, it recommends that ICETO use Selatan Frozen Foods, a frozen-dessert manufacturer in Johor, Malaysia, just across the causeway from Singapore. Selatan already makes chilled and frozen products for 7-Eleven operators in Singapore, Malaysia and Thailand, holds halal certification recognised in both Malaysia and Singapore, and is trusted by the 7-Eleven operators for food safety and on-time delivery. Under a contract manufacturing agreement, Selatan would produce ICETO cups to ICETO's recipes, and ICETO's own team would approve every batch. Second, 7-Eleven offered a regional supply agreement covering all three countries, giving ICETO freezer space in exchange for a guaranteed supply and an agreed promotional calendar.</p>
+    <p class="rd">Because Malaysia, Singapore and Thailand are all members of ASEAN, products made in Johor can move between these countries with lower trade barriers than products shipped from the Maldives, which is not an ASEAN member. Aishath still has concerns: "Our gelato is slow-churned in small batches. A large factory may not respect that. And once they have our recipes, what stops them making a copy for someone else?" Exhibit 2 shows the cost comparison prepared by ICETO's finance team.</p>
+  </article>
+  <article class="read"><h2>5. Three markets, three environments</h2>
+    <p class="rd">Singapore is a small, wealthy city-state with one of the highest incomes per person in the world. Its population is multicultural: Chinese, Malay, Indian and a large expatriate community, and English is widely used in business. Consumers are well travelled, enjoy trying new food concepts, and are used to paying premium prices for a quality café experience. Food safety rules are strict and clearly enforced, and halal certification is important for reaching the Malay-Muslim community. Competition for premium desserts is intense, with many international and local gelato shops.</p>
+    <p class="rd">Malaysia is larger, with a Muslim-majority population and lower average incomes than Singapore. Halal certification is essential for reaching mainstream consumers; without it, many shoppers will not consider a food product at all. Consumers are value-conscious, but young urban Malaysians spend readily on treats and trends they discover on social media. Business relationships are built on trust and personal contact, and decisions often take time.</p>
+    <p class="rd">Thailand is mainly Buddhist and has a huge 7-Eleven network that sells a very large volume of snacks and desserts every day. Thai consumers have a strong taste for sweet, tropical flavours such as coconut, mango and pandan, flavours ICETO already uses. Prices in convenience stores are low, and most shoppers are price-sensitive, although major cities such as Bangkok and tourist areas such as Phuket support higher prices. Business culture is high-context: relationships, respect and saving face matter, and partners expect regular personal visits.</p>
+    <p class="rd">Across all three countries, exchange rates can move quickly against the US dollar, and governments can change food labelling and import rules with little notice.</p>
+  </article>
+  <article class="read"><h2>6. What the research showed</h2>
+    <p class="rd">Detailed published data on gelato consumption was hard to find, so ICETO combined several methods. First, Yusuf and Hassan spent two weeks visiting Singapore, Kuala Lumpur and Bangkok, standing at 7-Eleven freezers, visiting gelato shops and malls, and watching what people bought and how much they paid. Second, 7-Eleven Singapore shared sales data showing which frozen products sold best and at what times. Third, ICETO commissioned an online survey of 600 young consumers across the three cities. The research pointed to four customer groups:</p>
+    <p class="rd">One: Young urban professionals aged 22 to 35 in Singapore: willing to pay SGD 7 to 9 for a premium café experience, choose places that feel special and look good on social media. Two: Students and young shoppers in all three markets: buy on impulse from convenience stores, want a treat for under SGD 4 (or its local equivalent), and respond to new flavours and limited editions. Three: Families: buy multipacks, very price-sensitive, prefer familiar brands. Four: Tourists in Singapore and Bangkok: looking for something they cannot find at home, and willing to try a new brand once.</p>
+    <p class="rd">Two further findings stood out. Convenience-store shoppers decide in a few seconds, so packaging must explain the product immediately. And while the Maldives is famous across the region as a luxury holiday destination, very few respondents connected it with food. 7-Eleven freezers in all three countries are dominated by mass-market ice-cream brands at low prices, with a small number of imported premium pints at the top. No brand offered tropical, artisan-style gelato at a mid-premium price.</p>
+  </article>
+  <article class="read"><h2>7. Product and brand decisions</h2>
+    <p class="rd">The two parts of the plan need different products. The flagship would serve fresh scoops, gelato cakes, desserts and specialty coffee, with the full ICETO menu. The 7-Eleven range would be a sealed 120 ml cup plus a four-pack of mini cups. Packaged gelato needs a longer shelf life than fresh gelato in Malé, so the recipe must be adjusted without losing too much texture.</p>
+    <p class="rd">The founders plan to keep the ICETO name in every market and three signature Maldivian flavours, young coconut, pandan, and tamarind-mango, in both the flagship and the cups. Each country would also receive one local flavour for its 7-Eleven range: kaya toast in Singapore, teh tarik in Malaysia, and Thai tea in Thailand. The flagship would also offer seasonal flavours that are never sold in 7-Eleven, to keep it special.</p>
+    <p class="rd">The team is still divided on the brand story. One idea is to put "Gelato from the Maldives" on every pack and on the flagship's walls, using the country's dream-holiday image. Others worry that a country known for beaches, not food, may confuse shoppers who only have a few seconds at the freezer, and prefer to lead with taste and the tropical flavours, keeping the Maldives as a smaller detail.</p>
+  </article>
+  <article class="read"><h2>8. Pricing across the region: the geocentric plan</h2>
+    <p class="rd">In Malé, a single scoop costs MVR 65, around USD 4.20. For the flagship, the founders plan a premium price of SGD 7.50 per scoop, in line with other premium gelato shops in Singapore. The 7-Eleven cups are a harder decision. Converting Maldivian prices directly would make the cups too expensive for convenience-store shoppers in Malaysia and Thailand. Letting each 7-Eleven operator set its own price, on the other hand, could create very different prices across neighbouring countries. Traders might then buy cheap ICETO cups in Thailand and resell them in Singapore, and the brand would mean different things in different places.</p>
+    <p class="rd">Hassan therefore proposes a geocentric approach. ICETO would set one regional price band for the 120 ml cup, roughly USD 2.20 to USD 2.90, and each country would price within that band after considering local incomes, taxes, retailer margins and exchange rates (see Exhibit 3). The cup would sit above mass-market ice cream but well below the flagship scoop and imported premium pints. Because production would be in Johor, most costs would be in Malaysian ringgit, and ASEAN trade rules would keep costs similar across the three countries. The finance team warns that currencies can move sharply, so the band would need regular review.</p>
+  </article>
+  <article class="read"><h2>9. The decision</h2>
+    <p class="rd">In March 2026, the board meets in Malé to decide. Should ICETO own the Singapore flagship, franchise it, or share it in a joint venture? Should it accept Selatan as its manufacturer, and how can it protect its recipes and quality? Which customers should the flagship and the 7-Eleven range each target, and can one brand sit comfortably in both a premium café and a convenience-store freezer? And is one regional price band realistic? "This is the biggest decision we have made since opening the first counter," Hassan tells the board. "If we get Singapore right, 7-Eleven can take us across Southeast Asia. If we get it wrong, we may not get a second chance."</p>
+  </article>
+  <p class="sub">Exhibits 1 to 3 are in the <b>Exhibits</b> tab.</p>
+</section>
+
+<!-- 2 MARKETS -->
+<section id="markets">
+  <h2>Three markets, three environments</h2>
+  <div class="tabs" id="mtabs"></div>
+  <div class="card" id="mcard"></div>
+  <div class="card">
+    <h3>Side-by-side</h3>
+    <div class="tbl"><table id="mtable"></table></div>
+    <label>Highlight a factor
+      <select id="mfactor"></select></label>
+    <p class="fb" id="mhint"></p>
+  </div>
+</section>
+
+<!-- 3 SEGMENTS -->
+<section id="segments">
+  <h2>Who is each product for?</h2>
+  <p class="sub">For each research segment, choose the channel you would target first. You get a prompt after each choice, not a verdict.</p>
+  <div class="card" id="segs"></div>
+</section>
+
+<!-- 4 ENTRY -->
+<section id="entry">
+  <h2>Flagship entry mode: weighted decision matrix</h2>
+  <p class="sub">Set what matters most to ICETO (weights), then adjust the 1–5 scores (5 = best for ICETO). Starting scores are one reading of the case. Change them and be ready to defend why.</p>
+  <div class="two">
+    <div class="card"><h3>Weights</h3><div id="w"></div></div>
+    <div class="card"><h3>Result</h3><div id="res"></div><p class="fb" id="resnote"></p></div>
+  </div>
+  <div class="card"><h3>Scores</h3><div class="tbl"><table id="sc"></table></div></div>
+</section>
+
+<!-- 5 SUPPLY -->
+<section id="supply">
+  <h2>7-Eleven cups: export from Malé or contract Selatan?</h2>
+  <div class="two">
+    <div class="card">
+      <h3>Unit economics (Exhibit 2 costs)</h3>
+      <label>Shelf price in USD (Singapore plan = 2.90) <b id="pv"></b>
+        <input type="range" id="price" min="2.2" max="2.9" step="0.05" value="2.9"></label>
+      <label>Retailer margin % <small>(assumption, not in the case)</small> <b id="mv"></b>
+        <input type="range" id="rm" min="15" max="50" step="1" value="30"></label>
+      <label>Annual volume (cups) <b id="vv"></b>
+        <input type="range" id="vol" min="50000" max="3000000" step="50000" value="500000"></label>
+    </div>
+    <div class="card" id="supres"></div>
+  </div>
+  <div class="card">
+    <h3>Risk side: not in the numbers</h3>
+    <p class="sub">Tick the safeguards you would write into a Selatan contract. The meter shows how many of the case's worries you have covered.</p>
+    <div id="safe"></div>
+    <div class="bar"><i id="safebar" style="width:0"></i></div>
+    <p class="fb" id="safenote"></p>
+  </div>
+</section>
+
+<!-- 6 PRICE -->
+<section id="price">
+  <h2>Does one regional price band hold?</h2>
+  <p class="sub">Planned cup prices are SGD 3.80, MYR 10.50 and THB 79 (Exhibit 3). Move each currency against the USD and watch whether the cup stays inside the USD 2.20–2.90 band.</p>
+  <div class="two">
+    <div class="card" id="fx"></div>
+    <div class="card">
+      <h3>Where the cup sits (USD)</h3>
+      <div class="scale" id="scale"></div>
+      <p class="fb" id="gap"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ASSESS -->
+<section id="assess">
+  <h2>Assessment questions</h2>
+  <p class="sub">Answer each question in your own words first. Then reveal the key points, tick the ones your answer covered, and see where you are missing marks. Tags show the level and learning outcome. Answers save in this browser only.</p>
+  <div class="card prog"><b id="aprog">0 of 10 answered</b><span id="acov" class="fb"></span></div>
+  <div id="qs"></div>
+  <div class="row"><button class="btn primary" id="aexp">Copy all my answers</button><button class="btn" id="aclr">Clear answers</button></div>
+  <p class="fb" id="aexn"></p>
+</section>
+
+<!-- 7 BOARD -->
+<section id="board">
+  <h2>You are the board</h2>
+  <p class="sub">Make the four calls and justify each in a sentence or two. Your answers save in this browser only. Copy the summary to submit or bring to class.</p>
+  <div class="card" id="bq"></div>
+  <button class="btn primary" id="copy">Copy my board paper</button>
+  <button class="btn" id="clear">Clear</button>
+  <p class="fb" id="copied"></p>
+</section>
+
+<!-- 8 EXHIBITS -->
+<section id="exhibits">
+  <h2>Exhibits</h2>
+  <div class="card"><h3>Exhibit 1: ICETO at a glance (2025)</h3><div class="tbl"><table>
+    <tr><td>Founded</td><td>2019, Majeedhee Magu, Malé</td></tr>
+    <tr><td>Outlets</td><td>5 stores + 2 resort counters</td></tr>
+    <tr><td>Production</td><td>One central kitchen, Hulhumalé</td></tr>
+    <tr><td>Revenue (2025)</td><td>MVR 19 million</td></tr>
+    <tr><td>Gross margin</td><td>48%</td></tr>
+    <tr><td>Instagram followers</td><td>78,000</td></tr>
+    <tr><td>International experience</td><td>None</td></tr></table></div></div>
+  <div class="card"><h3>Exhibit 2: Supply options per 120 ml cup (ICETO finance estimates)</h3><div class="tbl"><table>
+    <tr><th>Factor</th><th>A: Export from Malé</th><th>B: Selatan (Johor)</th></tr>
+    <tr><td>Cost delivered to Singapore store</td><td>USD 1.55</td><td>USD 0.68</td></tr>
+    <tr><td>Time to store</td><td>3–4 weeks (frozen sea freight)</td><td>1–2 days</td></tr>
+    <tr><td>Quality control</td><td>Full ICETO control</td><td>ICETO approves each batch</td></tr>
+    <tr><td>Recipe protection</td><td>High</td><td>Depends on contract</td></tr>
+    <tr><td>Halal certification</td><td>Must be obtained separately</td><td>Already certified (MY and SG)</td></tr>
+    <tr><td>Supply to Malaysia and Thailand</td><td>Difficult and costly</td><td>Easier under ASEAN trade rules</td></tr></table></div></div>
+  <div class="card"><h3>Exhibit 3: Proposed prices (illustrative, approximate)</h3><div class="tbl"><table>
+    <tr><th>Product and market</th><th>Planned price</th><th>Approx. USD</th></tr>
+    <tr><td>Flagship scoop, Singapore</td><td>SGD 7.50</td><td>5.60</td></tr>
+    <tr><td>7-Eleven cup, Singapore</td><td>SGD 3.80</td><td>2.90</td></tr>
+    <tr><td>7-Eleven cup, Malaysia</td><td>MYR 10.50</td><td>2.40</td></tr>
+    <tr><td>7-Eleven cup, Thailand</td><td>THB 79</td><td>2.20</td></tr>
+    <tr><td>Mass-market ice cream cup (typical)</td><td>n/a</td><td>0.80–1.20</td></tr>
+    <tr><td>Imported premium pint (per 120 ml, typical)</td><td>n/a</td><td>3.50–4.50</td></tr></table></div></div>
+</section>
+</main>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const store={get(k,d){try{const v=localStorage.getItem('iceto_'+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem('iceto_'+k,JSON.stringify(v))}catch(e){}}};
+
+/* NAV */
+const tabs=[['brief','Read the case'],['markets','Markets'],['segments','Segments'],['entry','Entry mode'],['supply','Supply'],['price','Price band'],['assess','Questions'],['board','Board decision'],['exhibits','Exhibits']];
+$('#nav').innerHTML=tabs.map(t=>`<button data-t="${t[0]}">${t[1]}</button>`).join('');
+function show(id){$$('section').forEach(s=>s.classList.toggle('on',s.id===id));$$('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===id));scrollTo(0,0);location.hash=id}
+$('#nav').onclick=e=>{if(e.target.dataset.t)show(e.target.dataset.t)};
+show(tabs.some(t=>t[0]===location.hash.slice(1))?location.hash.slice(1):'brief');
+
+/* MARKETS */
+const M={
+ Singapore:{inc:['Very high','Small, wealthy city-state; among the highest incomes per person in the world.'],pop:'Multicultural: Chinese, Malay, Indian, large expatriate community. English widely used in business.',halal:['Important','Needed to reach the Malay-Muslim community.'],price:['Premium accepted','Consumers pay premium prices for a quality café experience; SGD 7–9 for young professionals.'],reg:['Strict, clearly enforced','Food safety rules strict.'],comp:['Intense','Many international and local gelato shops.'],biz:'English-friendly, formal business setting.'},
+ Malaysia:{inc:['Lower than Singapore','Larger market, Muslim-majority population.'],pop:'Muslim-majority.',halal:['Essential','Without it many shoppers will not consider a food product at all.'],price:['Value-conscious','But young urban Malaysians spend readily on social-media treats and trends.'],reg:['Halal drives access','Halal certification is the gatekeeper.'],comp:['Not detailed in case','Check 7-Eleven freezers: mass brands plus a few imported pints.'],biz:'Relationships built on trust and personal contact; decisions take time.'},
+ Thailand:{inc:['Price-sensitive shoppers','Low convenience-store prices; Bangkok and Phuket support higher prices.'],pop:'Mainly Buddhist. Huge 7-Eleven network selling very large volumes of snacks and desserts daily.',halal:['Less central','Mainly Buddhist market; the case does not make halal a condition here.'],price:['Low price points','THB 79 (about USD 2.20) is the bottom of the band.'],reg:['Rules can change quickly','Governments can change labelling/import rules with little notice (all three).'],comp:['Mass-market dominated','Strong taste for sweet tropical flavours: coconut, mango, pandan.'],biz:'High-context: relationships, respect, saving face; partners expect regular personal visits.'}
+};
+const F=[['inc','Income & spending'],['pop','People & channel'],['halal','Halal'],['price','Price behaviour'],['reg','Regulation'],['comp','Competition & taste'],['biz','Business culture']];
+const hints={inc:'Does this support one regional price? Where would the band feel too high or too low?',pop:'How does the 7-Eleven network change the role of the flagship in each country?',halal:'Selatan is certified in MY and SG. What does that mean for the Thai rollout and for exporting from Malé?',price:'Compare with Exhibit 3. Which country sets the floor and which the ceiling?',reg:'What contract clause or review cycle protects ICETO if labelling or import rules change?',comp:'Which of ICETO\'s existing flavours already fit? Where is local adaptation needed?',biz:'How would this change who ICETO sends, and how often?'};
+let cur='Singapore';
+const val=(m,k)=>Array.isArray(M[m][k])?`<b>${M[m][k][0]}.</b> ${M[m][k][1]}`:M[m][k];
+function drawM(){
+ $('#mtabs').innerHTML=Object.keys(M).map(c=>`<button class="${c===cur?'on':''}" data-c="${c}">${c}</button>`).join('');
+ $('#mcard').innerHTML=`<h3>${cur}</h3>`+F.map(f=>`<p><small>${f[1]}</small><br>${val(cur,f[0])}</p>`).join('');
+ const hi=$('#mfactor').value||'inc';
+ $('#mtable').innerHTML='<tr><th></th>'+Object.keys(M).map(c=>`<th>${c}</th>`).join('')+'</tr>'+F.filter(f=>f[0]===hi).map(f=>`<tr><td><b>${f[1]}</b></td>`+Object.keys(M).map(c=>`<td>${val(c,f[0])}</td>`).join('')+'</tr>').join('');
+ $('#mhint').textContent='Think: '+hints[hi];
+}
+$('#mfactor').innerHTML=F.map(f=>`<option value="${f[0]}">${f[1]}</option>`).join('');
+$('#mfactor').onchange=drawM;
+$('#mtabs').onclick=e=>{if(e.target.dataset.c){cur=e.target.dataset.c;drawM()}};
+drawM();
+
+/* SEGMENTS */
+const S=[
+ ['Young urban professionals, 22–35 (Singapore)','Willing to pay SGD 7–9 for a premium café experience; choose places that feel special and look good on social media.',{Flagship:'Fits: premium price, experience and Instagram value match the flagship. Would a cup at SGD 3.80 weaken that?',"7-Eleven":'They may buy cups, but the research says they are paying for the experience. What would a freezer cup say about the brand to them?',Both:'Possible, but this is exactly Aishath\'s worry: does the cheap cup cannibalise or cheapen the flagship?'}],
+ ['Students and young shoppers (all three markets)','Impulse buyers at convenience stores; want a treat under about SGD 4; respond to new flavours and limited editions.',{Flagship:'Is SGD 7.50 a scoop within reach? The research suggests they stay under SGD 4.',"7-Eleven":'Fits: price under SGD 4, impulse purchase, and the local flavours (kaya toast, teh tarik, Thai tea) give novelty.',Both:'Flagship seasonal flavours might create a talking point, but volume sits in the freezer.'}],
+ ['Families (all three markets)','Buy multipacks, very price-sensitive, prefer familiar brands.',{Flagship:'Rarely: premium price and an unfamiliar brand. Does the flagship matter to them at all?',"7-Eleven":'Plausible via the four-pack, but "familiar brands" and price sensitivity are barriers. What does ICETO need to do to become familiar?',Both:'Be careful: the case describes them as price-sensitive and loyal to familiar brands.'}],
+ ['Tourists (Singapore and Bangkok)','Want something they cannot find at home; willing to try a new brand once.',{Flagship:'Fits: a destination store gives a one-time try. But does a one-time buyer build a brand?',"7-Eleven":'Reach is high in Bangkok especially. But will a tourist look in the freezer for a new brand?',Both:'The Maldives holiday image might work on tourists. Remember that few respondents link the Maldives with food.'}]
+];
+const sv=store.get('seg',{});
+$('#segs').innerHTML=S.map((s,i)=>`<div class="${i?'q':''}"><h3>${s[0]}</h3><small>${s[1]}</small><div class="tabs" style="margin-top:8px">${['Flagship','7-Eleven','Both'].map(c=>`<button data-i="${i}" data-c="${c}" class="${sv[i]===c?'on':''}">${c}</button>`).join('')}</div><div class="fb" id="sf${i}">${sv[i]?s[2][sv[i]]:''}</div></div>`).join('');
+$('#segs').onclick=e=>{const b=e.target.closest('button');if(!b)return;const i=b.dataset.i,c=b.dataset.c;sv[i]=c;store.set('seg',sv);$$('#segs button[data-i="'+i+'"]').forEach(x=>x.classList.toggle('on',x===b));$('#sf'+i).textContent=S[i][2][c]};
+
+/* ENTRY */
+const crit=['Control over brand & service','Cash needed up front (low is good)','Risk exposure (low is good)','Speed to open','Local market know-how'];
+const opts=['Wholly-owned','Franchise','Joint venture'];
+const sc0=store.get('sc',[[5,1,2,3,2],[2,5,4,4,5],[4,3,3,4,4]]);
+const w0=store.get('w',[3,5,4,3,3]);
+function drawE(){
+ $('#w').innerHTML=crit.map((c,i)=>`<label>${c}: <b id="wl${i}">${w0[i]}</b><input type="range" min="0" max="5" value="${w0[i]}" data-w="${i}"></label>`).join('');
+ $('#sc').innerHTML='<tr><th></th>'+opts.map(o=>`<th>${o}</th>`).join('')+'</tr>'+crit.map((c,i)=>`<tr><td>${c}</td>`+opts.map((o,j)=>`<td><select data-s="${j},${i}">${[1,2,3,4,5].map(n=>`<option ${sc0[j][i]===n?'selected':''}>${n}</option>`).join('')}</select></td>`).join('')+'</tr>').join('');
+ calcE();
+}
+function calcE(){
+ const tw=w0.reduce((a,b)=>a+b,0)||1;
+ const r=opts.map((o,j)=>[o,sc0[j].reduce((a,s,i)=>a+s*w0[i],0)/tw]);
+ $('#res').innerHTML=r.map(x=>`<div><b>${x[0]}</b> ${x[1].toFixed(2)} / 5<div class="bar"><i style="width:${x[1]*20}%"></i></div></div>`).join('');
+ const best=r.slice().sort((a,b)=>b[1]-a[1]);
+ $('#resnote').textContent=best[0][1]-best[1][1]<0.25?`${best[0][0]} and ${best[1][0]} are within 0.25. What would break the tie that the matrix doesn't capture?`:`${best[0][0]} leads under your weights. Which score would you have to change to flip it, and is that change defensible?`;
+ store.set('sc',sc0);store.set('w',w0);
+}
+$('#w').oninput=e=>{if(e.target.dataset.w!==undefined){w0[e.target.dataset.w]=+e.target.value;$('#wl'+e.target.dataset.w).textContent=e.target.value;calcE()}};
+$('#sc').onchange=e=>{if(e.target.dataset.s){const[j,i]=e.target.dataset.s.split(',');sc0[j][i]=+e.target.value;calcE()}};
+drawE();
+
+/* SUPPLY */
+const fmt=n=>n.toLocaleString(undefined,{maximumFractionDigits:2,minimumFractionDigits:2});
+function calcS(){
+ const p=+$('#price').value,m=+$('#rm').value/100,v=+$('#vol').value;
+ $('#pv').textContent='USD '+fmt(p);$('#mv').textContent=Math.round(m*100)+'%';$('#vv').textContent=v.toLocaleString();
+ const net=p*(1-m),a=net-1.55,b=net-0.68;
+ const row=(n,c,u,t)=>`<tr><td>${n}</td><td>${fmt(c)}</td><td>${fmt(u)}</td><td>${Math.round(u/net*100)}%</td><td>USD ${Math.round(u*v).toLocaleString()}</td></tr>`;
+ $('#supres').innerHTML=`<h3>Per-cup result</h3><p>ICETO receives about <b>USD ${fmt(net)}</b> per cup after the retailer margin (before tariffs, marketing, royalties or ICETO overheads, which the case does not give).</p><div class="tbl"><table><tr><th>Option</th><th>Cost</th><th>Left per cup</th><th>% of net</th><th>Per year</th></tr>${row('A: Malé',1.55,a)}${row('B: Selatan',0.68,b)}</table></div><p class="fb">${a<0?'At these inputs, exporting from Malé loses money on every cup.':'Exporting from Malé still leaves a positive margin at these inputs; the gap to Selatan is USD '+fmt(b-a)+' per cup.'} Cost is not the only criterion: what would the numbers not tell the board?</p>`;
+}
+$('#supply').addEventListener('input',calcS);calcS();
+const SAFE=['Recipe confidentiality and non-use clause (no copies for other brands)','Exclusivity: Selatan cannot make a similar product for competitors','ICETO approval of every batch, with right to reject and audit','Defined slow-churn spec and texture standard in the contract','Halal certificate maintenance written in as Selatan\'s obligation','Exit clause and ICETO ownership of recipes and brand assets','Regular price-band and cost review (currency clause)'];
+const sd=store.get('safe',[]);
+$('#safe').innerHTML=SAFE.map((s,i)=>`<label style="color:var(--ink)"><input type="checkbox" data-i="${i}" ${sd.includes(i)?'checked':''}> ${s}</label>`).join('');
+function calcSafe(){const n=$$('#safe input:checked').length;$('#safebar').style.width=n/SAFE.length*100+'%';store.set('safe',$$('#safe input:checked').map(x=>+x.dataset.i));$('#safenote').textContent=n+' of '+SAFE.length+' safeguards. Which of Aishath\'s two worries (quality, copying) does each one address?'}
+$('#safe').onchange=calcSafe;calcSafe();
+
+/* PRICE */
+const C=[['Singapore','SGD',3.80,2.90],['Malaysia','MYR',10.50,2.40],['Thailand','THB',79,2.20]];
+const fx=store.get('fx',[0,0,0]);
+$('#fx').innerHTML='<h3>Currency move vs USD</h3>'+C.map((c,i)=>`<label>${c[0]}: ${c[1]} weakens (−) or strengthens (+) <b id="fxv${i}"></b><input type="range" min="-20" max="20" value="${fx[i]}" data-i="${i}"><span id="fxo${i}" class="fb"></span></label>`).join('')+'<label>Reset <button class="btn" id="fxr">Reset to 0%</button></label>';
+function calcP(){
+ const lo=2.2,hi=2.9,max=6,mk=[];
+ C.forEach((c,i)=>{const u=c[3]*(1+fx[i]/100);const ok=u>=lo-0.005&&u<=hi+0.005;
+  $('#fxv'+i).textContent=(fx[i]>0?'+':'')+fx[i]+'%';
+  $('#fxo'+i).innerHTML=`<br>Local price ${c[1]} ${c[2]} = USD ${fmt(u)} <span class="pill ${ok?'ok':'bad'}">${ok?'inside band':u<lo?'below band':'above band'}</span>`;
+  mk.push([c[0].slice(0,2).toUpperCase(),u,'c'])});
+ const refs=[['Mass',1.0],['Pint',4.0],['Flagship',5.6]];
+ const x=v=>(v/max*100)+'%';
+ $('#scale').innerHTML=`<div class="band" style="left:${x(lo)};width:${(hi-lo)/max*100}%"></div>`+refs.map(r=>`<div class="mk" style="left:${x(r[1])};top:60px">${r[0]}</div>`).join('')+mk.map(m=>`<div class="mk c" style="left:${x(m[1])}">${m[0]}</div>`).join('');
+ const us=C[0][3]*(1+fx[0]/100),ut=C[2][3]*(1+fx[2]/100);
+ $('#gap').innerHTML=`Singapore vs Thailand cup gap: <b>${Math.round((us/ut-1)*100)}%</b>. Large gaps invite parallel trade. Flagship scoop (USD 5.60) is <b>${fmt(5.6/us)}x</b> the Singapore cup. Aishath said "three times": compare a scoop to a 120 ml cup fairly. Is her worry still valid?<br><small>Mass-market (USD 0.80–1.20) and premium-pint (USD 3.50–4.50) markers show the mid-premium gap ICETO targets.</small>`;
+ store.set('fx',fx);
+}
+$('#fx').oninput=e=>{if(e.target.dataset.i!==undefined){fx[e.target.dataset.i]=+e.target.value;calcP()}};
+$('#fx').onclick=e=>{if(e.target.id==='fxr'){fx.fill(0);$$('#fx input').forEach(i=>i.value=0);calcP()}};
+calcP();
+
+/* BOARD */
+const BQ=[
+ ['Flagship entry','Own it, franchise it, or joint venture?',['Wholly-owned','Franchise','Joint venture']],
+ ['Manufacturing','Accept Selatan as contract manufacturer?',['Yes, with safeguards','Yes, as is','No, export from Malé','Not yet: pilot first']],
+ ['Brand story','"Gelato from the Maldives" on every pack?',['Maldives front and centre','Taste first, Maldives as detail','Different by channel']],
+ ['Pricing','Is one regional price band realistic?',['Yes: one band for all','Band with country flexibility','No: price by country']]
+];
+const bd=store.get('board',{});
+$('#bq').innerHTML=BQ.map((q,i)=>`<div class="${i?'q':''}"><h3>${i+1}. ${q[0]}</h3><small>${q[1]}</small><select data-i="${i}" style="margin-top:8px"><option value="">Select…</option>${q[2].map(o=>`<option ${bd['c'+i]===o?'selected':''}>${o}</option>`).join('')}</select><textarea rows="2" data-r="${i}" placeholder="Why? Use evidence from the case and the exhibits.">${bd['r'+i]||''}</textarea></div>`).join('');
+$('#bq').oninput=$('#bq').onchange=e=>{const t=e.target;if(t.dataset.i!==undefined)bd['c'+t.dataset.i]=t.value;if(t.dataset.r!==undefined)bd['r'+t.dataset.r]=t.value;store.set('board',bd)};
+$('#copy').onclick=async()=>{
+ const txt='ICETO BOARD PAPER\n\n'+BQ.map((q,i)=>`${i+1}. ${q[0]}: ${bd['c'+i]||'(undecided)'}\n   ${bd['r'+i]||'(no rationale)'}`).join('\n\n');
+ try{await navigator.clipboard.writeText(txt);$('#copied').textContent='Copied.'}catch(e){$('#copied').textContent='Copy blocked by browser. Select the text and copy manually.'}};
+$('#clear').onclick=()=>{if(confirm('Clear your board answers?')){Object.keys(bd).forEach(k=>delete bd[k]);store.set('board',{});location.reload()}};
+
+/* THEME */
+(function(){const r=document.documentElement,b=$('#theme');
+ const isDark=()=>r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;
+ const lab=()=>b.textContent=isDark()?'Light mode':'Dark mode';
+ b.onclick=()=>{const n=isDark()?'light':'dark';r.dataset.theme=n;try{localStorage.setItem('iceto_theme',n)}catch(e){}lab()};lab()})();
+
+/* READ ALOUD */
+(function(){
+ const ps=$$('.rd'),st=$('#pstat');
+ if(!('speechSynthesis' in window)){$('.prow').style.display='none';st.textContent='Read-aloud is not supported in this browser. Try Chrome, Edge or Safari.';return}
+ const ss=speechSynthesis;let idx=0,playing=false,voices=[];
+ function loadV(){voices=ss.getVoices().filter(v=>/^en/i.test(v.lang));const sel=$('#pvoice');const saved=store.get('voice','');sel.innerHTML=voices.map((v,i)=>`<option value="${v.name}" ${v.name===saved?'selected':''}>${v.name} (${v.lang})</option>`).join('')||'<option>Default</option>'}
+ loadV();ss.onvoiceschanged=loadV;
+ $('#pvoice').onchange=e=>{store.set('voice',e.target.value);if(playing)speak(idx)};
+ $('#pspeed').onchange=()=>{if(playing)speak(idx)};
+ function mark(i){ps.forEach((p,j)=>p.classList.toggle('now',j===i));if(ps[i])ps[i].scrollIntoView({block:'center',behavior:'smooth'})}
+ function speak(i){
+  ss.cancel();idx=i;if(i>=ps.length){stop();st.textContent='Finished.';return}
+  playing=true;mark(i);
+  const u=new SpeechSynthesisUtterance(ps[i].textContent);u.rate=+$('#pspeed').value;
+  const v=voices.find(v=>v.name===$('#pvoice').value);if(v)u.voice=v;
+  u.onend=()=>{if(playing&&idx===i)speak(i+1)};
+  u.onerror=()=>{};
+  st.textContent=`Reading paragraph ${i+1} of ${ps.length}`;
+  ss.speak(u)}
+ function stop(){playing=false;ss.cancel();mark(-1);idx=0}
+ $('#pplay').onclick=()=>{if(ss.paused){ss.resume();playing=true;return}speak(playing?idx:0)};
+ $('#ppause').onclick=()=>{if(ss.speaking){ss.pause();st.textContent='Paused'}};
+ $('#pstop').onclick=()=>{stop();st.textContent='Stopped.'};
+ ps.forEach((p,i)=>p.onclick=()=>speak(i));
+ addEventListener('pagehide',()=>ss.cancel());
+})();
+
+/* ASSESSMENT */
+const Q=[
+['L1','LO5','Growth strategy','ICETO’s board looked at four ways to grow. Using the product/market growth matrix, name the strategy ICETO finally chose and explain why it fits ICETO’s situation in 2025.',['Market development: existing gelato range into new markets','Fits: the Maldives market is small and crowded with outlets, while the product is already proven','Other options named: penetration (loyalty, delivery), product development (cakes, pints), diversification (bakery-café)']],
+['L1','LO5','Management orientation','Yusuf, Aishath and Hassan each have a different view on how to run ICETO abroad. Identify the management orientation each founder represents, and explain which one suits ICETO’s Southeast Asia plan best.',['Yusuf = ethnocentric (copy Malé exactly)','Aishath = polycentric (each country separate)','Hassan = regiocentric, moving toward geocentric (one regional strategy, local adjustments)','Hassan’s view fits a shared 7-Eleven network, one manufacturer and one price band']],
+['L2','LO1, LO4','Comparing environments','Choose TWO of the three markets (Singapore, Malaysia, Thailand). Compare them on income level, culture or religion, and rules that affect food products. Explain what each difference means for ICETO.',['Singapore: high income, multicultural, strict food safety, halal matters for Malay-Muslim buyers','Malaysia: lower income, Muslim majority, halal essential, value-conscious','Thailand: mainly Buddhist, price-sensitive, loves tropical flavours, high-context business culture','Implications drawn: price level, halal certification, flavour choice, relationship-building']],
+['L3','LO3','Market research methods','Published data on gelato in the region was hard to find. Describe the three research methods ICETO used, and explain why combining them was better than relying on one method alone.',['Direct perception: founders visiting stores and freezers','Secondary/partner data: 7-Eleven sales data','Primary survey: 600 consumers','Combining balances observation, real sales behaviour and stated preferences; each covers the others’ weaknesses']],
+['L4','LO2, LO5','Segmentation and targeting','The research found four customer groups. Which group should the Singapore flagship target, and which group should the 7-Eleven cups target? Explain your choices using evidence from the case.',['Flagship: young urban professionals (pay SGD 7–9, want a special, social-media-friendly experience); tourists as a secondary group','7-Eleven cups: students and young shoppers (impulse, under SGD 4, like new flavours)','Families are price-sensitive and loyal to familiar brands, so a weaker fit']],
+['L4','LO2','Positioning','Aishath worries that cheap ICETO cups in 7-Eleven could hurt the premium flagship. Explain how ICETO could position the flagship and the 7-Eleven range differently so that both can succeed under one brand.',['Flagship = premium experience (fresh scoops, desserts, seasonal flavours sold only there, café setting)','Cups = affordable everyday treat, mid-premium in the freezer','Clear separation in product, price and setting reduces confusion','The freezer gap (between mass-market and imported pints) supports the cup’s position']],
+['L5','LO2, LO4','Sourcing decision','Using Exhibit 2, compare exporting gelato from Malé with contract manufacturing at Selatan in Johor. Describe TWO advantages and ONE risk of choosing Selatan.',['Advantage: much lower cost (USD 0.68 vs 1.55)','Advantage: 1–2 days vs 3–4 weeks to store','Advantage: already halal-certified for MY and SG; easier supply to Malaysia and Thailand under ASEAN rules','Risk: less direct control over slow-churn quality','Risk: recipe protection depends on the contract']],
+['L6','LO2','Entry mode for the flagship','ICETO can open the Singapore flagship as a wholly-owned store, a franchise, or a joint venture. Compare these options on control, risk and the money ICETO must invest, and describe which option fits ICETO best.',['Wholly-owned: full control, highest cost and risk (Singapore rents are very high)','Franchise: low investment, least control over the brand experience','Joint venture: shared cost, risk and decisions, local know-how','Best answers link the choice to ICETO’s limited cash and the flagship’s role in building brand image']],
+['L7','LO2, LO4','Product and brand adaptation','ICETO plans to keep three signature Maldivian flavours everywhere but add one local flavour per country. Describe which product strategy this is, and explain whether ICETO should lead with “Gelato from the Maldives” on its packaging.',['Product adaptation: core product and brand standardised, partly localised; packaged cups and longer shelf life are also adaptation','Country of origin: Maldives is known for holidays, not food','Strong for the flagship story, but risky on a freezer pack where shoppers decide in seconds','Leading with taste and keeping the Maldives as a smaller detail is a well-supported answer']],
+['L8','LO4, LO5','Geocentric pricing','Explain why converting the Malé price directly (ethnocentric) or letting each 7-Eleven operator set its own price (polycentric) would cause problems. Then describe how Hassan’s geocentric price band solves them, using Exhibit 3.',['Ethnocentric: MVR 65 converted is too high for convenience-store shoppers, especially in Malaysia and Thailand','Polycentric: very different prices across neighbours could create gray-market reselling and confuse the brand','Geocentric: one USD 2.20–2.90 band, adjusted for local income, tax, margin and exchange rate','Sits above mass-market ice cream and below imported pints and the flagship scoop','Needs regular review because currencies move']]
+];
+const A=store.get('ans',{});
+function qHTML(){
+ $('#qs').innerHTML=Q.map((q,i)=>{const a=A[i]||{t:'',r:false,k:[]};
+  return `<div class="card qc" data-i="${i}"><div><span class="lv">${q[0]}</span><span class="lv">${q[1]}</span><b>Q${i+1}. ${q[2]}</b></div><p>${q[3]}</p>
+  <textarea rows="5" placeholder="Write your answer here..." data-t="${i}">${a.t.replace(/</g,'&lt;')}</textarea>
+  <div class="row"><button class="btn" data-r="${i}">${a.r?'Hide key points':'Reveal key points'}</button><small id="wc${i}" style="align-self:center">${a.t.trim()?a.t.trim().split(/\s+/).length+' words':''}</small></div>
+  <div class="kp" id="kp${i}" style="display:${a.r?'block':'none'}"><b>Did your answer include these? Tick honestly.</b>${q[4].map((k,j)=>`<label><input type="checkbox" data-k="${i},${j}" ${a.k.includes(j)?'checked':''}> ${k}</label>`).join('')}<p class="fb" id="ks${i}"></p></div></div>`}).join('');
+ Q.forEach((q,i)=>ks(i));prog();
+}
+function ks(i){const a=A[i];if(!a)return;const n=a.k.length,t=Q[i][4].length;const el=$('#ks'+i);if(el)el.textContent=`You covered ${n} of ${t} key points.`+(n<t?' Revise the unticked ones and add them to your answer.':' Strong coverage.')}
+function prog(){const done=Q.filter((q,i)=>A[i]&&A[i].t.trim()).length;
+ let c=0,t=0,rv=0;Q.forEach((q,i)=>{if(A[i]&&A[i].r){rv++;c+=A[i].k.length;t+=q[4].length}});
+ $('#aprog').textContent=`${done} of ${Q.length} answered`;
+ $('#acov').textContent=rv?`Self-marked coverage on ${rv} revealed question${rv>1?'s':''}: ${Math.round(c/t*100)}% of key points`:'';}
+$('#qs').addEventListener('input',e=>{const t=e.target;if(t.dataset.t!==undefined){const i=t.dataset.t;A[i]=A[i]||{t:'',r:false,k:[]};A[i].t=t.value;store.set('ans',A);const w=t.value.trim();$('#wc'+i).textContent=w?w.split(/\s+/).length+' words':'';prog()}});
+$('#qs').addEventListener('change',e=>{const t=e.target;if(t.dataset.k){const[i,j]=t.dataset.k.split(',').map(Number);A[i]=A[i]||{t:'',r:false,k:[]};A[i].k=t.checked?[...new Set([...A[i].k,j])]:A[i].k.filter(x=>x!==j);store.set('ans',A);ks(i);prog()}});
+$('#qs').addEventListener('click',e=>{const b=e.target.closest('button[data-r]');if(!b)return;const i=b.dataset.r;A[i]=A[i]||{t:'',r:false,k:[]};
+ if(!A[i].r&&!A[i].t.trim()&&!confirm('You have not written an answer yet. Reveal anyway?'))return;
+ A[i].r=!A[i].r;store.set('ans',A);b.textContent=A[i].r?'Hide key points':'Reveal key points';$('#kp'+i).style.display=A[i].r?'block':'none';prog()});
+$('#aexp').onclick=async()=>{const txt='ICETO CASE: MY ANSWERS\n\n'+Q.map((q,i)=>{const a=A[i]||{t:'',k:[]};return `Q${i+1} (${q[0]}, ${q[1]}) ${q[2]}\n${a.t||'(no answer)'}\nSelf-marked key points: ${a.r?a.k.length+'/'+q[4].length:'not revealed'}`}).join('\n\n');
+ try{await navigator.clipboard.writeText(txt);$('#aexn').textContent='Copied. Paste into a document to submit or share.'}catch(e){$('#aexn').textContent='Copy blocked by the browser.'}};
+$('#aclr').onclick=()=>{if(confirm('Clear all your answers?')){Object.keys(A).forEach(k=>delete A[k]);store.set('ans',{});qHTML()}};
+qHTML();
+</script>
+</body>
+</html>
