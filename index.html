@@ -225,6 +225,13 @@ small{color:var(--mute)}
   <p class="sub">Answer each question in your own words first. Then reveal the key points, tick the ones your answer covered, and see where you are missing marks. Tags show the level and learning outcome. Answers save in this browser only.</p>
   <div class="card prog"><b id="aprog">0 of 10 answered</b><span id="acov" class="fb"></span></div>
   <div id="qs"></div>
+  <div class="card" id="subbox">
+    <h3>Submit to your lecturer</h3>
+    <label>Full name<input type="text" id="sname" autocomplete="name" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)"></label>
+    <label>Student ID<input type="text" id="sid" style="width:100%;font:inherit;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)"></label>
+    <div class="row"><button class="btn primary" id="asub">Submit my answers</button></div>
+    <p class="fb" id="asubn">Submitting again adds a new row; your lecturer will use the latest one. Also copy your answers as a backup.</p>
+  </div>
   <div class="row"><button class="btn primary" id="aexp">Copy all my answers</button><button class="btn" id="aclr">Clear answers</button></div>
   <p class="fb" id="aexn"></p>
 </section>
@@ -456,6 +463,26 @@ $('#aexp').onclick=async()=>{const txt='ICETO CASE: MY ANSWERS\n\n'+Q.map((q,i)=
  try{await navigator.clipboard.writeText(txt);$('#aexn').textContent='Copied. Paste into a document to submit or share.'}catch(e){$('#aexn').textContent='Copy blocked by the browser.'}};
 $('#aclr').onclick=()=>{if(confirm('Clear all your answers?')){Object.keys(A).forEach(k=>delete A[k]);store.set('ans',{});qHTML()}};
 qHTML();
+
+/* SUBMIT TO GOOGLE SHEET (paste your Apps Script web app URL below) */
+const SUBMIT_URL='https://script.google.com/macros/s/AKfycbwM6g2xZ0LX-7QzoAxjBn2N7WEJ7r76ZoNiln4sGrerG6S4XP2rAc9zVo_i2BExfiXN_A/exec';
+(function(){
+ if(!SUBMIT_URL){$('#subbox').style.display='none';return}
+ const nm=$('#sname'),id=$('#sid');nm.value=store.get('nm','');id.value=store.get('sid','');
+ $('#asub').onclick=async()=>{
+  if(!nm.value.trim()||!id.value.trim()){$('#asubn').textContent='Please enter your name and student ID.';return}
+  store.set('nm',nm.value);store.set('sid',id.value);
+  const B=store.get('board',{});
+  const row={name:nm.value.trim(),studentId:id.value.trim(),
+   answers:Q.map((q,i)=>(A[i]&&A[i].t)||''),
+   selfMarks:Q.map((q,i)=>A[i]&&A[i].r?A[i].k.length+'/'+q[4].length:''),
+   board:BQ.map((q,i)=>(B['c'+i]||'')+' | '+(B['r'+i]||''))};
+  $('#asub').disabled=true;$('#asubn').textContent='Sending...';
+  try{await fetch(SUBMIT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(row)});
+   $('#asubn').textContent='Sent at '+new Date().toLocaleTimeString()+'. Keep a copy using the button below, in case you need to resubmit.'}
+  catch(e){$('#asubn').textContent='Could not send. Check your connection, or copy your answers and send them another way.'}
+  $('#asub').disabled=false};
+})();
 </script>
 </body>
 </html>
